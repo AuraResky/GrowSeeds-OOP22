@@ -1,9 +1,5 @@
 package view;
 
-import service.PanenService;
-import service.StokService;
-import model.Stok;
-import java.util.List;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -21,6 +17,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
+import service.PanenService;
 
 public class DashboardView extends Application {
 
@@ -28,6 +25,8 @@ public class DashboardView extends Application {
     private ScrollPane panelBeranda;
     private StokView stokView;
     private PanenView panenView;
+    private ProfileView profileView;
+    private SaranView saranView;
     private Stage primaryStage;
     private Label lblStokRendahValue; 
     private PanenService panenService;
@@ -45,7 +44,9 @@ public class DashboardView extends Application {
         mainContainer = new BorderPane();
         panenService = new PanenService();
         stokView = new StokView(() -> updateStokRendahCounter());
-        panenView = new PanenView(); 
+        panenView = new PanenView();
+        profileView = new ProfileView();
+        saranView = new SaranView();
         VBox sidebar = createSidebar();
         mainContainer.setLeft(sidebar);
 
@@ -102,8 +103,16 @@ public class DashboardView extends Application {
             setMenuActive(menuPanen);
             mainContainer.setCenter(panenView);
         });
-        menuSaran.setOnMouseClicked(e -> setMenuActive(menuSaran));
-        menuProfil.setOnMouseClicked(e -> setMenuActive(menuProfil));
+        menuSaran.setOnMouseClicked(e -> {
+            setMenuActive(menuSaran);
+            saranView = new SaranView();
+            mainContainer.setCenter(saranView);
+        });
+        menuProfil.setOnMouseClicked(e -> {
+            setMenuActive(menuProfil);
+            profileView = new ProfileView();
+            mainContainer.setCenter(profileView);
+        });
 
         Label lblKeluar = new Label("Keluar");
         lblKeluar.setFont(Font.font("SansSerif", 18));
@@ -217,10 +226,7 @@ public class DashboardView extends Application {
         HBox.setHgrow(aktivitasPanel, Priority.ALWAYS); 
 
         VBox tipsPanel = createSectionPanel("Saran Tani Cerdas");
-        tipsPanel.getChildren().addAll(
-            createTipsRow("Jadwal Irigasi", "Suhu hari ini mencapai 32°C. Disarankan melakukan penyiraman lahan padi pada sore hari."),
-            createTipsRow("Pemupukan", "Waktunya memberikan pupuk urea untuk Lahan B (Jagung).")
-        );
+        tipsPanel.getChildren().add(createEmptyRowPlaceholder("Belum ada saran khusus. Perbarui data panen dan cuaca untuk mendapatkan rekomendasi yang lebih baik."));
         HBox.setHgrow(tipsPanel, Priority.ALWAYS); 
 
         bottomRow.getChildren().addAll(aktivitasPanel, tipsPanel);

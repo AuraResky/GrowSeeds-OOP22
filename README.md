@@ -25,23 +25,6 @@ GrowSeeds was created as a Final Project for the Object Oriented Programming cou
 
 ---
 
-# Role System
-
-## Farmer
-
-GrowSeeds uses a single-user model: each account represents a farmer who manages their own farm data.
-
-Farmers can:
-
-* Add and update stock items
-* Record harvest data
-* Sell stock products
-* View farming recommendations
-* Update profile information
-
-There are no separate manager/member roles in this version.
-
----
 
 # Dashboard
 

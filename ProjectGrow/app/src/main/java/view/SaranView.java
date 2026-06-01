@@ -29,11 +29,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import model.DeteksiHama;
-import model.InfoCuacaTani;
 import model.KalenderTanam;
 import model.Panen;
 import service.DeteksiHamaService;
-import service.InfoCuacaService;
 import service.KalenderTanamService;
 import service.PanenService;
 
@@ -46,14 +44,12 @@ public class SaranView extends VBox {
 
     private final DeteksiHamaService deteksiHamaService = new DeteksiHamaService();
     private final KalenderTanamService kalenderTanamService = new KalenderTanamService();
-    private final InfoCuacaService infoCuacaService = new InfoCuacaService();
     private final PanenService panenService = new PanenService();
 
     private VBox contentPanel;
     private Button btnRekomendasi;
     private Button btnKalender;
     private Button btnHama;
-    private Button btnCuaca;
 
     public SaranView() {
         buildView();
@@ -107,14 +103,12 @@ public class SaranView extends VBox {
         btnRekomendasi = createSubmenuButton("💧 Rekomendasi Pupuk", true);
         btnKalender = createSubmenuButton("📅 Kalender Tanam", false);
         btnHama = createSubmenuButton("🐛 Deteksi Hama", false);
-        btnCuaca = createSubmenuButton("🌤️ Info Cuaca", false);
 
         btnRekomendasi.setOnAction(e -> switchMenu(btnRekomendasi, "rekomendasi"));
         btnKalender.setOnAction(e -> switchMenu(btnKalender, "kalender"));
         btnHama.setOnAction(e -> switchMenu(btnHama, "hama"));
-        btnCuaca.setOnAction(e -> switchMenu(btnCuaca, "cuaca"));
 
-        submenu.getChildren().addAll(btnRekomendasi, btnKalender, btnHama, btnCuaca);
+        submenu.getChildren().addAll(btnRekomendasi, btnKalender, btnHama);
         return submenu;
     }
 
@@ -144,8 +138,6 @@ public class SaranView extends VBox {
                 "-fx-font-family: 'SansSerif'; -fx-font-size: 12px; -fx-text-fill: #666;");
         btnHama.setStyle("-fx-background-color: #e0e0e0; -fx-background-radius: 5; " +
                 "-fx-font-family: 'SansSerif'; -fx-font-size: 12px; -fx-text-fill: #666;");
-        btnCuaca.setStyle("-fx-background-color: #e0e0e0; -fx-background-radius: 5; " +
-                "-fx-font-family: 'SansSerif'; -fx-font-size: 12px; -fx-text-fill: #666;");
 
         activeBtn.setStyle("-fx-background-color: " + GREEN_LIGHT + "; -fx-background-radius: 5; " +
                 "-fx-font-family: 'SansSerif'; -fx-font-weight: bold; -fx-font-size: 12px; " +
@@ -161,9 +153,6 @@ public class SaranView extends VBox {
                 break;
             case "hama":
                 showDeteksiHama();
-                break;
-            case "cuaca":
-                showInfoCuaca();
                 break;
         }
     }
@@ -494,127 +483,6 @@ public class SaranView extends VBox {
         return panel;
     }
 
-    private void showInfoCuaca() {
-        contentPanel.getChildren().clear();
-
-        VBox headerSection = new VBox(5);
-        Label title = new Label("Informasi Cuaca Pertanian");
-        title.setFont(Font.font("SansSerif", FontWeight.BOLD, 22));
-        title.setTextFill(Color.web(GREEN_DARK));
-
-        Label subtitle = new Label("Pantau kondisi cuaca untuk perencanaan pertanian yang lebih baik");
-        subtitle.setFont(Font.font("SansSerif", 12));
-        subtitle.setTextFill(Color.GRAY);
-        headerSection.getChildren().addAll(title, subtitle);
-        contentPanel.getChildren().add(headerSection);
-
-        contentPanel.getChildren().add(createDivider());
-
-        Label lblIntegrasi = new Label("Data cuaca dapat dipadukan dengan hasil panen untuk membuat keputusan pemupukan dan penanaman lebih tepat.");
-        lblIntegrasi.setFont(Font.font("SansSerif", 12));
-        lblIntegrasi.setTextFill(Color.web("#5B5B5B"));
-        contentPanel.getChildren().add(lblIntegrasi);
-
-
-        TableView<InfoCuacaTani> table = new TableView<>();
-        table.setPrefHeight(300);
-
-        TableColumn<InfoCuacaTani, String> colWilayah = new TableColumn<>("Wilayah Lahan");
-        colWilayah.setCellValueFactory(new PropertyValueFactory<>("wilayahLahan"));
-        colWilayah.setPrefWidth(150);
-
-        TableColumn<InfoCuacaTani, Double> colSuhu = new TableColumn<>("Suhu (°C)");
-        colSuhu.setCellValueFactory(new PropertyValueFactory<>("suhu"));
-        colSuhu.setPrefWidth(100);
-
-        TableColumn<InfoCuacaTani, Double> colKelembaban = new TableColumn<>("Kelembaban (%)");
-        colKelembaban.setCellValueFactory(new PropertyValueFactory<>("kelembaban"));
-        colKelembaban.setPrefWidth(120);
-
-        TableColumn<InfoCuacaTani, Double> colHujan = new TableColumn<>("Curah Hujan (mm)");
-        colHujan.setCellValueFactory(new PropertyValueFactory<>("curahHujan"));
-        colHujan.setPrefWidth(130);
-
-        table.getColumns().addAll(colWilayah, colSuhu, colKelembaban, colHujan);
-        table.setPlaceholder(new Label("Tidak ada informasi cuaca yang tersedia. Silakan perbarui data cuaca di database."));
-
-        TextField txtSearch = new TextField();
-        txtSearch.setPromptText("Cari wilayah lahan...");
-        txtSearch.setStyle("-fx-padding: 10px; -fx-font-size: 12px; -fx-border-color: #ddd; " +
-                "-fx-border-radius: 5; -fx-background-radius: 5;");
-        HBox.setHgrow(txtSearch, Priority.ALWAYS);
-
-        Button btnSearch = new Button("Cari");
-        btnSearch.setStyle("-fx-background-color: " + GREEN_LIGHT + "; -fx-background-radius: 5; " +
-                "-fx-font-family: 'SansSerif'; -fx-font-weight: bold; -fx-font-size: 11px; " +
-                "-fx-text-fill: white; -fx-padding: 8px 20px;");
-        btnSearch.setCursor(javafx.scene.Cursor.HAND);
-
-        Button btnTambah = new Button("Tambah");
-        btnTambah.setStyle("-fx-background-color: #DCEBD7; -fx-background-radius: 5; " +
-                "-fx-font-family: 'SansSerif'; -fx-font-weight: bold; -fx-font-size: 11px; " +
-                "-fx-text-fill: #294A20; -fx-padding: 8px 20px;");
-        btnTambah.setCursor(javafx.scene.Cursor.HAND);
-
-        Button btnUbah = new Button("Ubah Terpilih");
-        btnUbah.setStyle("-fx-background-color: #F3D9D3; -fx-background-radius: 5; " +
-                "-fx-font-family: 'SansSerif'; -fx-font-weight: bold; -fx-font-size: 11px; " +
-                "-fx-text-fill: #8B3A3A; -fx-padding: 8px 20px;");
-        btnUbah.setCursor(javafx.scene.Cursor.HAND);
-
-        Button btnRefresh = new Button("Segarkan");
-        btnRefresh.setStyle("-fx-background-color: #DCEBD7; -fx-background-radius: 5; " +
-                "-fx-font-family: 'SansSerif'; -fx-font-weight: bold; -fx-font-size: 11px; " +
-                "-fx-text-fill: #294A20; -fx-padding: 8px 20px;");
-        btnRefresh.setCursor(javafx.scene.Cursor.HAND);
-
-        HBox searchBox = new HBox(10, txtSearch, btnSearch, btnTambah, btnUbah, btnRefresh);
-        searchBox.setPadding(new Insets(15, 0, 15, 0));
-        contentPanel.getChildren().add(searchBox);
-
-        Runnable refreshCuaca = () -> {
-            table.getItems().clear();
-            String keyword = txtSearch.getText().trim();
-            List<InfoCuacaTani> hasil;
-            if (keyword.isEmpty()) {
-                hasil = infoCuacaService.getAllInfoCuaca();
-            } else {
-                hasil = infoCuacaService.cariCuacaByWilayah(keyword);
-            }
-            table.getItems().addAll(hasil);
-        };
-
-        btnSearch.setOnAction(e -> refreshCuaca.run());
-        btnRefresh.setOnAction(e -> {
-            txtSearch.clear();
-            refreshCuaca.run();
-        });
-
-        btnTambah.setOnAction(e -> {
-            Optional<InfoCuacaTani> result = showInfoCuacaDialog(null);
-            result.ifPresent(item -> {
-                infoCuacaService.tambahInfoCuaca(item.getWilayahLahan(), item.getSuhu(), item.getKelembaban(), item.getCurahHujan());
-                refreshCuaca.run();
-            });
-        });
-
-        btnUbah.setOnAction(e -> {
-            InfoCuacaTani selected = table.getSelectionModel().getSelectedItem();
-            if (selected == null) {
-                showAlert("Pilih data", "Pilih data cuaca terlebih dahulu untuk diubah.", Alert.AlertType.WARNING);
-                return;
-            }
-            Optional<InfoCuacaTani> result = showInfoCuacaDialog(selected);
-            result.ifPresent(item -> {
-                infoCuacaService.updateInfoCuaca(selected.getId(), item.getWilayahLahan(), item.getSuhu(), item.getKelembaban(), item.getCurahHujan());
-                refreshCuaca.run();
-            });
-        });
-
-        refreshCuaca.run();
-        contentPanel.getChildren().add(table);
-    }
-
     private Optional<Panen> getLatestPanen() {
         return panenService.getAllPanen().stream()
                 .filter(p -> p.getTanggalPanen() != null && !p.getTanggalPanen().isBlank())
@@ -668,64 +536,6 @@ public class SaranView extends VBox {
                     return null;
                 }
                 return new KalenderTanam(namaTanaman, tanggalSemai, estimasiPanen, fasePertumbuhan);
-            }
-            return null;
-        });
-
-        return dialog.showAndWait();
-    }
-
-    private Optional<InfoCuacaTani> showInfoCuacaDialog(InfoCuacaTani info) {
-        Dialog<InfoCuacaTani> dialog = new Dialog<>();
-        dialog.setTitle(info == null ? "Tambah Info Cuaca" : "Ubah Info Cuaca");
-        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-
-        TextField txtWilayah = new TextField();
-        txtWilayah.setPromptText("Wilayah lahan");
-        TextField txtSuhu = new TextField();
-        txtSuhu.setPromptText("Suhu (°C)");
-        TextField txtKelembaban = new TextField();
-        txtKelembaban.setPromptText("Kelembaban (%)");
-        TextField txtHujan = new TextField();
-        txtHujan.setPromptText("Curah hujan (mm)");
-
-        if (info != null) {
-            txtWilayah.setText(info.getWilayahLahan());
-            txtSuhu.setText(String.valueOf(info.getSuhu()));
-            txtKelembaban.setText(String.valueOf(info.getKelembaban()));
-            txtHujan.setText(String.valueOf(info.getCurahHujan()));
-        }
-
-        GridPane grid = new GridPane();
-        grid.setHgap(10);
-        grid.setVgap(10);
-        grid.setPadding(new Insets(20, 20, 10, 20));
-        grid.add(new Label("Wilayah Lahan:"), 0, 0);
-        grid.add(txtWilayah, 1, 0);
-        grid.add(new Label("Suhu (°C):"), 0, 1);
-        grid.add(txtSuhu, 1, 1);
-        grid.add(new Label("Kelembaban (%):"), 0, 2);
-        grid.add(txtKelembaban, 1, 2);
-        grid.add(new Label("Curah Hujan (mm):"), 0, 3);
-        grid.add(txtHujan, 1, 3);
-
-        dialog.getDialogPane().setContent(grid);
-
-        dialog.setResultConverter(buttonType -> {
-            if (buttonType == ButtonType.OK) {
-                try {
-                    String wilayah = txtWilayah.getText().trim();
-                    double suhu = Double.parseDouble(txtSuhu.getText().trim());
-                    double kelembaban = Double.parseDouble(txtKelembaban.getText().trim());
-                    double curahHujan = Double.parseDouble(txtHujan.getText().trim());
-                    if (wilayah.isEmpty()) {
-                        showAlert("Input tidak valid", "Wilayah lahan harus diisi.", Alert.AlertType.ERROR);
-                        return null;
-                    }
-                    return new InfoCuacaTani(wilayah, suhu, kelembaban, curahHujan);
-                } catch (NumberFormatException ex) {
-                    showAlert("Input tidak valid", "Suhu, kelembaban, dan curah hujan harus berupa angka.", Alert.AlertType.ERROR);
-                }
             }
             return null;
         });

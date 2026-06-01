@@ -110,14 +110,6 @@ public class DatabaseConnection {
                 "kebutuhan_npk REAL NOT NULL" +
                 ");";
 
-        String queryTabelInfoCuaca = "CREATE TABLE IF NOT EXISTS info_cuaca_tani (" +
-                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "wilayah_lahan TEXT NOT NULL, " +
-                "suhu REAL NOT NULL, " +
-                "kelembaban REAL NOT NULL, " +
-                "curah_hujan REAL NOT NULL" +
-                ");";
-
         try (Connection conn = getConnection();
              Statement stmt = conn.createStatement()) {
 
@@ -128,7 +120,6 @@ public class DatabaseConnection {
             stmt.executeUpdate(queryTabelDeteksiHama);
             stmt.executeUpdate(queryTabelKalenderTanam);
             stmt.executeUpdate(queryTabelRekomendasiPupuk);
-            stmt.executeUpdate(queryTabelInfoCuaca);
 
             File databaseFile = new File(URL.replace("jdbc:sqlite:", ""));
             System.out.println("Database GrowSeeds siap digunakan.");

@@ -182,7 +182,7 @@ public class DashboardView extends Application {
         lblBannerTitle.setFont(Font.font("SansSerif", FontWeight.BOLD, 20));
         lblBannerTitle.setStyle("-fx-text-fill: white;");
         
-        Label lblBannerSub = new Label("Data cuaca dan kalender tanam siap diakses. Pastikan Anda memperbarui log panen harian.");
+        Label lblBannerSub = new Label("Kalender tanam dan data panen siap diakses. Pastikan Anda memperbarui log panen harian.");
         lblBannerSub.setFont(Font.font("SansSerif", 14));
         lblBannerSub.setStyle(("-fx-text-fill: #DCEBD7;"));
         banner.getChildren().addAll(lblBannerTitle, lblBannerSub);
@@ -226,7 +226,7 @@ public class DashboardView extends Application {
         HBox.setHgrow(aktivitasPanel, Priority.ALWAYS); 
 
         VBox tipsPanel = createSectionPanel("Saran Tani Cerdas");
-        tipsPanel.getChildren().add(createEmptyRowPlaceholder("Belum ada saran khusus. Perbarui data panen dan cuaca untuk mendapatkan rekomendasi yang lebih baik."));
+        tipsPanel.getChildren().add(createEmptyRowPlaceholder("Belum ada saran khusus. Perbarui data panen untuk mendapatkan rekomendasi yang lebih baik."));
         HBox.setHgrow(tipsPanel, Priority.ALWAYS); 
 
         bottomRow.getChildren().addAll(aktivitasPanel, tipsPanel);

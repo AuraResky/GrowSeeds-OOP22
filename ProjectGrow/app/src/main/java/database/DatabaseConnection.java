@@ -67,13 +67,15 @@ public class DatabaseConnection {
 
         String queryTabelPanen = "CREATE TABLE IF NOT EXISTS panen (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "id_user INTEGER, " +
                 "nama_lahan TEXT NOT NULL, " +
                 "jenis_tanaman TEXT NOT NULL, " +
                 "jumlah_panen REAL NOT NULL, " +
                 "satuan TEXT NOT NULL, " +
                 "tanggal_panen TEXT NOT NULL, " +
-                "kondisi_cuaca TEXT" +
-                ");";
+                "kondisi_cuaca TEXT," +
+                "FOREIGN KEY(id_user) REFERENCES users(id_user)" +
+                ")";
 
         try (Connection conn = getConnection();
              Statement stmt = conn.createStatement()) {

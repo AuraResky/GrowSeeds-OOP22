@@ -1,5 +1,6 @@
 package view;
 
+import service.PanenService;
 import service.StokService;
 import model.Stok;
 import java.util.List;
@@ -26,8 +27,10 @@ public class DashboardView extends Application {
     private BorderPane mainContainer;
     private ScrollPane panelBeranda;
     private StokView stokView;
+    private PanenView panenView;
     private Stage primaryStage;
     private Label lblStokRendahValue; 
+    private PanenService panenService;
     private HBox menuBeranda;
     private HBox menuPanen;
     private HBox menuStok;
@@ -40,7 +43,9 @@ public class DashboardView extends Application {
         primaryStage.setTitle("GrowSeeds - Aplikasi Manajemen Pertanian");
 
         mainContainer = new BorderPane();
+        panenService = new PanenService();
         stokView = new StokView(() -> updateStokRendahCounter());
+        panenView = new PanenView(); 
         VBox sidebar = createSidebar();
         mainContainer.setLeft(sidebar);
 
@@ -93,7 +98,10 @@ public class DashboardView extends Application {
         });
         
 
-        menuPanen.setOnMouseClicked(e -> setMenuActive(menuPanen));
+        menuPanen.setOnMouseClicked(e -> {
+            setMenuActive(menuPanen);
+            mainContainer.setCenter(panenView);
+        });
         menuSaran.setOnMouseClicked(e -> setMenuActive(menuSaran));
         menuProfil.setOnMouseClicked(e -> setMenuActive(menuProfil));
 
@@ -170,8 +178,11 @@ public class DashboardView extends Application {
         lblBannerSub.setStyle(("-fx-text-fill: #DCEBD7;"));
         banner.getChildren().addAll(lblBannerTitle, lblBannerSub);
 
-        VBox cardLahan = createMetricCard("Total Lahan Aktif", "4", "Lahan", "#FFFFFF");
-        VBox cardEstimasi = createMetricCard("Estimasi Panen Bulan Ini", "1.2", "Ton", "#FFFFFF");
+        int totalLahan = panenService.hitungTotalLahanAktif();
+        double totalPanen = panenService.hitungTotalHasilPanen();
+
+        VBox cardLahan = createMetricCard("Total Lahan Aktif", String.valueOf(totalLahan), "Lahan", "#FFFFFF");
+        VBox cardEstimasi = createMetricCard("Total Hasil Panen", String.format("%.2f", totalPanen), "Ton", "#FFFFFF");
 
         VBox cardStokRendah = new VBox(8);
         cardStokRendah.setStyle("-fx-background-color: #FFF9E6; -fx-background-radius: 12; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 5);");

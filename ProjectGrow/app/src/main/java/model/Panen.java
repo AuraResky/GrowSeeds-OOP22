@@ -2,6 +2,7 @@ package model;
 
 public class Panen {
     private int id;
+    private int idUser;
     private String namaLahan;
     private String jenisTanaman;
     private double jumlahPanen;
@@ -9,7 +10,8 @@ public class Panen {
     private String tanggalPanen;
     private String kondisiCuaca;
 
-    public Panen(String namaLahan, String jenisTanaman, double jumlahPanen, String satuan, String tanggalPanen, String kondisiCuaca) {
+    public Panen(int idUser, String namaLahan, String jenisTanaman, double jumlahPanen, String satuan, String tanggalPanen, String kondisiCuaca) {
+        this.idUser = idUser;
         this.namaLahan = namaLahan;
         this.jenisTanaman = jenisTanaman;
         this.jumlahPanen = jumlahPanen;
@@ -18,8 +20,9 @@ public class Panen {
         this.kondisiCuaca = kondisiCuaca;
     }
 
-    public Panen(int id, String namaLahan, String jenisTanaman, double jumlahPanen, String satuan, String tanggalPanen, String kondisiCuaca) {
+    public Panen(int id, int idUser, String namaLahan, String jenisTanaman, double jumlahPanen, String satuan, String tanggalPanen, String kondisiCuaca) {
         this.id = id;
+        this.idUser = idUser;
         this.namaLahan = namaLahan;
         this.jenisTanaman = jenisTanaman;
         this.jumlahPanen = jumlahPanen;
@@ -30,6 +33,9 @@ public class Panen {
 
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
+
+    public int getIdUser(){ return idUser; }
+    public void setIdUser(int idUser){ this.idUser = idUser; }
 
     public String getNamaLahan() { return namaLahan; }
     public void setNamaLahan(String namaLahan) { this.namaLahan = namaLahan; }

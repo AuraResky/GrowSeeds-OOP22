@@ -32,12 +32,10 @@ import model.DeteksiHama;
 import model.InfoCuacaTani;
 import model.KalenderTanam;
 import model.Panen;
-import model.RekomendasiPupuk;
 import service.DeteksiHamaService;
 import service.InfoCuacaService;
 import service.KalenderTanamService;
 import service.PanenService;
-import service.RekomendasiPupukService;
 
 public class SaranView extends VBox {
     private static final String GREEN_DARK = "#294a20";
@@ -48,7 +46,6 @@ public class SaranView extends VBox {
 
     private final DeteksiHamaService deteksiHamaService = new DeteksiHamaService();
     private final KalenderTanamService kalenderTanamService = new KalenderTanamService();
-    private final RekomendasiPupukService rekomendasiPupukService = new RekomendasiPupukService();
     private final InfoCuacaService infoCuacaService = new InfoCuacaService();
     private final PanenService panenService = new PanenService();
 
@@ -67,7 +64,7 @@ public class SaranView extends VBox {
         setBackground(new Background(new BackgroundFill(Color.web(BACKGROUND), CornerRadii.EMPTY, Insets.EMPTY)));
         setPadding(new Insets(20, 30, 20, 30));
 
-        // Header Section
+ 
         BorderPane headerPanel = new BorderPane();
         headerPanel.setPadding(new Insets(0, 0, 30, 0));
 
@@ -84,11 +81,11 @@ public class SaranView extends VBox {
         headerPanel.setLeft(titleBlock);
         getChildren().add(headerPanel);
 
-        // Submenu Section
+
         HBox submenuPanel = createSubmenuPanel();
         getChildren().add(submenuPanel);
 
-        // Content Panel
+
         contentPanel = new VBox();
         contentPanel.setStyle("-fx-background-color: white; -fx-background-radius: 15; " +
                 "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 5);");
@@ -97,13 +94,11 @@ public class SaranView extends VBox {
 
         getChildren().add(contentPanel);
 
-        // Default: Tampilkan Rekomendasi Pupuk
+
         showRekomendasiPupuk();
     }
 
-    /**
-     * Membuat panel submenu
-     */
+
     private HBox createSubmenuPanel() {
         HBox submenu = new HBox(10);
         submenu.setPadding(new Insets(0, 0, 20, 0));
@@ -123,9 +118,7 @@ public class SaranView extends VBox {
         return submenu;
     }
 
-    /**
-     * Membuat button submenu
-     */
+
     private Button createSubmenuButton(String text, boolean isActive) {
         Button btn = new Button(text);
         btn.setPrefWidth(150);
@@ -142,9 +135,7 @@ public class SaranView extends VBox {
         return btn;
     }
 
-    /**
-     * Switch menu
-     */
+
     private void switchMenu(Button activeBtn, String menu) {
         // Update button states
         btnRekomendasi.setStyle("-fx-background-color: #e0e0e0; -fx-background-radius: 5; " +
@@ -177,18 +168,16 @@ public class SaranView extends VBox {
         }
     }
 
-    /**
-     * Menampilkan Rekomendasi Pupuk
-     */
+
     private void showRekomendasiPupuk() {
         contentPanel.getChildren().clear();
 
         VBox headerSection = new VBox(5);
-        Label title = new Label("Rekomendasi Pupuk");
+        Label title = new Label("Kalkulator Rekomendasi Pupuk");
         title.setFont(Font.font("SansSerif", FontWeight.BOLD, 22));
         title.setTextFill(Color.web(GREEN_DARK));
 
-        Label subtitle = new Label("Panduan pemberian pupuk berdasarkan jenis tanaman dan luas lahan");
+        Label subtitle = new Label("Hitung dosis pupuk berdasarkan jenis komoditas dan luas lahan.");
         subtitle.setFont(Font.font("SansSerif", 12));
         subtitle.setTextFill(Color.GRAY);
         headerSection.getChildren().addAll(title, subtitle);
@@ -196,140 +185,78 @@ public class SaranView extends VBox {
 
         contentPanel.getChildren().add(createDivider());
 
-        Optional<Panen> panenTerakhir = getLatestPanen();
-        Label lblIntegrasi = new Label();
-        if (panenTerakhir.isPresent()) {
-            lblIntegrasi.setText("Tanaman panen terakhir: " + panenTerakhir.get().getJenisTanaman() + ". Gunakan tombol di bawah untuk mengisi rekomendasi berdasarkan tanaman tersebut.");
-        } else {
-            lblIntegrasi.setText("Tidak ada data panen terbaru. Tambahkan data panen agar rekomendasi pupuk lebih relevan.");
-        }
-        lblIntegrasi.setFont(Font.font("SansSerif", 12));
-        lblIntegrasi.setTextFill(Color.web("#5B5B5B"));
-        contentPanel.getChildren().add(lblIntegrasi);
+        HBox mainLayout = new HBox(30);
+        mainLayout.setAlignment(Pos.TOP_LEFT);
 
-        // Search section
-        HBox searchBox = new HBox(10);
-        searchBox.setPadding(new Insets(15, 0, 15, 0));
-        TextField txtSearch = new TextField();
-        txtSearch.setPromptText("Cari jenis tanaman...");
-        txtSearch.setStyle("-fx-padding: 10px; -fx-font-size: 12px; -fx-border-color: #ddd; " +
-                "-fx-border-radius: 5; -fx-background-radius: 5;");
+        VBox formCard = new VBox(15);
+        formCard.setPrefWidth(380);
+        formCard.setPadding(new Insets(20));
+        formCard.setStyle("-fx-background-color: white; -fx-background-radius: 12; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 5);");
 
-        Button btnSearch = new Button("Cari");
-        btnSearch.setStyle("-fx-background-color: " + GREEN_LIGHT + "; -fx-background-radius: 5; " +
-                "-fx-font-family: 'SansSerif'; -fx-font-weight: bold; -fx-font-size: 11px; " +
-                "-fx-text-fill: white; -fx-padding: 8px 20px;");
-        btnSearch.setCursor(javafx.scene.Cursor.HAND);
-        HBox.setHgrow(txtSearch, Priority.ALWAYS);
+        Label lblJenis = new Label("Jenis Tanaman:");
+        lblJenis.setFont(Font.font("SansSerif", FontWeight.BOLD, 12));
+        TextField txtTanaman = new TextField();
+        txtTanaman.setPromptText("Masukkan jenis tanaman");
+        txtTanaman.setStyle("-fx-padding: 10px; -fx-font-size: 12px; -fx-border-color: #ddd; -fx-border-radius: 8; -fx-background-radius: 8;");
+        txtTanaman.setMaxWidth(Double.MAX_VALUE);
 
-        Button btnTambah = new Button("Tambah");
-        btnTambah.setStyle("-fx-background-color: #DCEBD7; -fx-background-radius: 5; " +
-                "-fx-font-family: 'SansSerif'; -fx-font-weight: bold; -fx-font-size: 11px; " +
-                "-fx-text-fill: #294A20; -fx-padding: 8px 20px;");
-        btnTambah.setCursor(javafx.scene.Cursor.HAND);
+        Label lblLuas = new Label("Luas Lahan (m²):");
+        lblLuas.setFont(Font.font("SansSerif", FontWeight.BOLD, 12));
+        TextField txtLuas = new TextField();
+        txtLuas.setPromptText("Masukkan luas area (m²)");
+        txtLuas.setStyle("-fx-padding: 10px; -fx-font-size: 12px; -fx-border-color: #ddd; -fx-border-radius: 8; -fx-background-radius: 8;");
+        txtLuas.setMaxWidth(Double.MAX_VALUE);
 
-        Button btnUbah = new Button("Ubah Terpilih");
-        btnUbah.setStyle("-fx-background-color: #F3D9D3; -fx-background-radius: 5; " +
-                "-fx-font-family: 'SansSerif'; -fx-font-weight: bold; -fx-font-size: 11px; " +
-                "-fx-text-fill: #8B3A3A; -fx-padding: 8px 20px;");
-        btnUbah.setCursor(javafx.scene.Cursor.HAND);
+        Button btnHitung = new Button("Hitung Sekarang");
+        btnHitung.setMaxWidth(Double.MAX_VALUE);
+        btnHitung.setCursor(javafx.scene.Cursor.HAND);
+        btnHitung.setStyle("-fx-background-color: " + GREEN_LIGHT + "; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 12px; -fx-background-radius: 8;");
 
-        Button btnRefresh = new Button("Segarkan");
-        btnRefresh.setStyle("-fx-background-color: #DCEBD7; -fx-background-radius: 5; " +
-                "-fx-font-family: 'SansSerif'; -fx-font-weight: bold; -fx-font-size: 11px; " +
-                "-fx-text-fill: #294A20; -fx-padding: 8px 20px;");
-        btnRefresh.setCursor(javafx.scene.Cursor.HAND);
+        formCard.getChildren().addAll(lblJenis, txtTanaman, lblLuas, txtLuas, btnHitung);
 
-        Button btnGunakanPanenTerakhir = new Button("Pakai Tanaman Panen Terakhir");
-        btnGunakanPanenTerakhir.setStyle("-fx-background-color: #E7F4E7; -fx-background-radius: 5; " +
-                "-fx-font-family: 'SansSerif'; -fx-font-weight: bold; -fx-font-size: 11px; " +
-                "-fx-text-fill: #294A20; -fx-padding: 8px 20px;");
-        btnGunakanPanenTerakhir.setCursor(javafx.scene.Cursor.HAND);
+        VBox resultCard = new VBox(15);
+        resultCard.setPadding(new Insets(20));
+        resultCard.setPrefWidth(450);
+        resultCard.setStyle("-fx-background-color: #F4F7F4; -fx-background-radius: 12; -fx-border-color: #D2E2D2; -fx-border-radius: 12;");
 
-        searchBox.getChildren().addAll(txtSearch, btnSearch, btnGunakanPanenTerakhir, btnTambah, btnUbah, btnRefresh);
-        contentPanel.getChildren().add(searchBox);
+        Label lblResultTitle = new Label("Hasil Analisis Kebutuhan");
+        lblResultTitle.setFont(Font.font("SansSerif", FontWeight.BOLD, 16));
+        lblResultTitle.setTextFill(Color.web(GREEN_DARK));
 
-        // Table
-        TableView<RekomendasiPupuk> table = new TableView<>();
-        table.setPrefHeight(300);
+        Label lblOutput = new Label("Silakan isi form di samping kiri untuk mengkalkulasi takaran pupuk.");
+        lblOutput.setWrapText(true);
+        lblOutput.setFont(Font.font("SansSerif", 13));
+        lblOutput.setTextFill(Color.web("#555555"));
 
-        TableColumn<RekomendasiPupuk, String> colTanaman = new TableColumn<>("Jenis Tanaman");
-        colTanaman.setCellValueFactory(new PropertyValueFactory<>("jenisTanaman"));
-        colTanaman.setPrefWidth(150);
+        resultCard.getChildren().addAll(lblResultTitle, lblOutput);
 
-        TableColumn<RekomendasiPupuk, Double> colLahan = new TableColumn<>("Luas Lahan (m²)");
-        colLahan.setCellValueFactory(new PropertyValueFactory<>("luasLahan"));
-        colLahan.setPrefWidth(120);
-
-        TableColumn<RekomendasiPupuk, Double> colUrea = new TableColumn<>("Urea (Kg)");
-        colUrea.setCellValueFactory(new PropertyValueFactory<>("kebutuhanUrea"));
-        colUrea.setPrefWidth(100);
-
-        TableColumn<RekomendasiPupuk, Double> colNpk = new TableColumn<>("NPK (Kg)");
-        colNpk.setCellValueFactory(new PropertyValueFactory<>("kebutuhanNpk"));
-        colNpk.setPrefWidth(100);
-
-        table.getColumns().addAll(colTanaman, colLahan, colUrea, colNpk);
-        table.setPlaceholder(new Label("Tidak ada rekomendasi pupuk ditemukan. Silakan perbarui data di database."));
-
-        Runnable refreshRekomendasi = () -> {
-            table.getItems().clear();
-            String keyword = txtSearch.getText().trim();
-            List<RekomendasiPupuk> hasil;
-            if (keyword.isEmpty()) {
-                hasil = rekomendasiPupukService.getAllRekomendasi();
-            } else {
-                hasil = rekomendasiPupukService.cariRekomendasi(keyword);
-            }
-            table.getItems().addAll(hasil);
-        };
-
-        btnSearch.setOnAction(e -> refreshRekomendasi.run());
-        btnRefresh.setOnAction(e -> {
-            txtSearch.clear();
-            refreshRekomendasi.run();
-        });
-
-        btnGunakanPanenTerakhir.setOnAction(e -> {
-            Optional<Panen> currentLast = getLatestPanen();
-            if (currentLast.isPresent()) {
-                txtSearch.setText(currentLast.get().getJenisTanaman());
-                refreshRekomendasi.run();
-            } else {
-                showAlert("Data Panen Kosong", "Tidak ada data panen terbaru untuk digunakan.", Alert.AlertType.INFORMATION);
+        btnHitung.setOnAction(e -> {
+            try {
+                double luas = Double.parseDouble(txtLuas.getText().trim());
+                String tanaman = txtTanaman.getText().trim();
+                if (tanaman.isEmpty()) {
+                    lblOutput.setText("⚠️ Tolong isi jenis tanaman terlebih dahulu.");
+                    return;
+                }
+                double urea = luas * 0.015;
+                double npk = luas * 0.020;
+                lblOutput.setText(String.format(
+                        "Untuk luas area %,.0f m² tanaman %s, dosis optimal fase awal:\n\n" +
+                                "• Kebutuhan Urea : %,.1f Kg\n" +
+                                "• Kebutuhan NPK  : %,.1f Kg\n\n" +
+                                "Saran: Aplikasikan pada pagi hari saat kondisi tanah lembab.",
+                        luas, tanaman, urea, npk
+                ));
+            } catch (NumberFormatException ex) {
+                lblOutput.setText("⚠️ Tolong masukkan nilai angka yang valid pada input luas lahan.");
             }
         });
 
-        btnTambah.setOnAction(e -> {
-            Optional<RekomendasiPupuk> result = showRekomendasiPupukDialog(null);
-            result.ifPresent(item -> {
-                rekomendasiPupukService.tambahRekomendasi(
-                        item.getJenisTanaman(), item.getLuasLahan(), item.getKebutuhanUrea(), item.getKebutuhanNpk());
-                refreshRekomendasi.run();
-            });
-        });
-
-        btnUbah.setOnAction(e -> {
-            RekomendasiPupuk selected = table.getSelectionModel().getSelectedItem();
-            if (selected == null) {
-                showAlert("Pilih data", "Pilih rekomendasi pupuk terlebih dahulu untuk diubah.", Alert.AlertType.WARNING);
-                return;
-            }
-            Optional<RekomendasiPupuk> result = showRekomendasiPupukDialog(selected);
-            result.ifPresent(item -> {
-                rekomendasiPupukService.updateRekomendasi(
-                        selected.getId(), item.getJenisTanaman(), item.getLuasLahan(), item.getKebutuhanUrea(), item.getKebutuhanNpk());
-                refreshRekomendasi.run();
-            });
-        });
-
-        refreshRekomendasi.run();
-        contentPanel.getChildren().add(table);
+        mainLayout.getChildren().addAll(formCard, resultCard);
+        contentPanel.getChildren().add(mainLayout);
     }
 
-    /**
-     * Menampilkan Kalender Tanam
-     */
+
     private void showKalenderTanam() {
         contentPanel.getChildren().clear();
 
@@ -351,7 +278,7 @@ public class SaranView extends VBox {
         lblIntegrasi.setTextFill(Color.web("#5B5B5B"));
         contentPanel.getChildren().add(lblIntegrasi);
 
-        // Table
+
         TableView<KalenderTanam> table = new TableView<>();
         table.setPrefHeight(300);
 
@@ -451,9 +378,7 @@ public class SaranView extends VBox {
         contentPanel.getChildren().add(table);
     }
 
-    /**
-     * Menampilkan Deteksi Hama (dengan detail dan opsi lihat hama lain)
-     */
+
     private void showDeteksiHama() {
         contentPanel.getChildren().clear();
 
@@ -506,9 +431,7 @@ public class SaranView extends VBox {
         });
     }
 
-    /**
-     * Membuat panel detail hama
-     */
+
     private VBox createHamaDetailPanel(ComboBox<String> cmbHama) {
         VBox panel = new VBox(15);
 
@@ -530,7 +453,7 @@ public class SaranView extends VBox {
             return panel;
         }
 
-        // Tingkat Bahaya
+
         HBox tingkatBox = new HBox(10);
         tingkatBox.setStyle("-fx-background-color: " + YELLOW_DANGER + "; -fx-background-radius: 8; " +
                 "-fx-padding: 15;");
@@ -542,7 +465,7 @@ public class SaranView extends VBox {
         tingkatBox.getChildren().addAll(lblTingkat, lblTingkatValue);
         panel.getChildren().add(tingkatBox);
 
-        // Gejala
+
         VBox gejalaSection = new VBox(8);
         Label lblGejalTitle = new Label("Gejala pada Tanaman:");
         lblGejalTitle.setFont(Font.font("SansSerif", FontWeight.BOLD, 12));
@@ -555,7 +478,7 @@ public class SaranView extends VBox {
         gejalaSection.getChildren().addAll(lblGejalTitle, txtGejala);
         panel.getChildren().add(gejalaSection);
 
-        // Solusi Penanganan
+
         VBox solusiSection = new VBox(8);
         Label lblSolusiTitle = new Label("Cara Mengatasi:");
         lblSolusiTitle.setFont(Font.font("SansSerif", FontWeight.BOLD, 12));
@@ -571,9 +494,6 @@ public class SaranView extends VBox {
         return panel;
     }
 
-    /**
-     * Menampilkan Info Cuaca
-     */
     private void showInfoCuaca() {
         contentPanel.getChildren().clear();
 
@@ -595,7 +515,7 @@ public class SaranView extends VBox {
         lblIntegrasi.setTextFill(Color.web("#5B5B5B"));
         contentPanel.getChildren().add(lblIntegrasi);
 
-        // Table
+
         TableView<InfoCuacaTani> table = new TableView<>();
         table.setPrefHeight(300);
 
@@ -699,65 +619,6 @@ public class SaranView extends VBox {
         return panenService.getAllPanen().stream()
                 .filter(p -> p.getTanggalPanen() != null && !p.getTanggalPanen().isBlank())
                 .max(Comparator.comparing(Panen::getTanggalPanen));
-    }
-
-    private Optional<RekomendasiPupuk> showRekomendasiPupukDialog(RekomendasiPupuk rekomendasi) {
-        Dialog<RekomendasiPupuk> dialog = new Dialog<>();
-        dialog.setTitle(rekomendasi == null ? "Tambah Rekomendasi Pupuk" : "Ubah Rekomendasi Pupuk");
-        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-
-        TextField txtTanaman = new TextField();
-        txtTanaman.setPromptText("Jenis tanaman");
-        TextField txtLahan = new TextField();
-        txtLahan.setPromptText("Luas lahan (m²)");
-        TextField txtUrea = new TextField();
-        txtUrea.setPromptText("Kebutuhan Urea");
-        TextField txtNpk = new TextField();
-        txtNpk.setPromptText("Kebutuhan NPK");
-
-        if (rekomendasi != null) {
-            txtTanaman.setText(rekomendasi.getJenisTanaman());
-            txtLahan.setText(String.valueOf(rekomendasi.getLuasLahan()));
-            txtUrea.setText(String.valueOf(rekomendasi.getKebutuhanUrea()));
-            txtNpk.setText(String.valueOf(rekomendasi.getKebutuhanNpk()));
-        }
-
-        GridPane grid = new GridPane();
-        grid.setHgap(10);
-        grid.setVgap(10);
-        grid.setPadding(new Insets(20, 20, 10, 20));
-        grid.add(new Label("Jenis Tanaman:"), 0, 0);
-        grid.add(txtTanaman, 1, 0);
-        grid.add(new Label("Luas Lahan (m²):"), 0, 1);
-        grid.add(txtLahan, 1, 1);
-        grid.add(new Label("Urea (Kg):"), 0, 2);
-        grid.add(txtUrea, 1, 2);
-        grid.add(new Label("NPK (Kg):"), 0, 3);
-        grid.add(txtNpk, 1, 3);
-
-        dialog.getDialogPane().setContent(grid);
-
-        dialog.setResultConverter(buttonType -> {
-            if (buttonType == ButtonType.OK) {
-                try {
-                    String jenisTanaman = txtTanaman.getText().trim();
-                    double luasLahan = Double.parseDouble(txtLahan.getText().trim());
-                    double kebutuhanUrea = Double.parseDouble(txtUrea.getText().trim());
-                    double kebutuhanNpk = Double.parseDouble(txtNpk.getText().trim());
-                    if (jenisTanaman.isEmpty()) {
-                        throw new IllegalArgumentException("Jenis tanaman tidak boleh kosong.");
-                    }
-                    return new RekomendasiPupuk(jenisTanaman, luasLahan, kebutuhanUrea, kebutuhanNpk);
-                } catch (NumberFormatException ex) {
-                    showAlert("Input tidak valid", "Luas lahan, Urea, dan NPK harus berupa angka.", Alert.AlertType.ERROR);
-                } catch (IllegalArgumentException ex) {
-                    showAlert("Input tidak valid", ex.getMessage(), Alert.AlertType.ERROR);
-                }
-            }
-            return null;
-        });
-
-        return dialog.showAndWait();
     }
 
     private Optional<KalenderTanam> showKalenderTanamDialog(KalenderTanam kalender) {
@@ -880,9 +741,8 @@ public class SaranView extends VBox {
         alert.showAndWait();
     }
 
-    /**
-     * Helper untuk membuat divider
-     */
+
+
     private javafx.scene.shape.Line createDivider() {
         javafx.scene.shape.Line divider = new javafx.scene.shape.Line();
         divider.setStrokeWidth(1);

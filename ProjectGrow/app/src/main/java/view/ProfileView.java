@@ -49,7 +49,7 @@ public class ProfileView extends VBox {
         setBackground(new Background(new BackgroundFill(Color.web(BACKGROUND), CornerRadii.EMPTY, Insets.EMPTY)));
         setPadding(new Insets(20, 30, 20, 30));
 
-        // Header Section
+
         BorderPane headerPanel = new BorderPane();
         headerPanel.setPadding(new Insets(0, 0, 30, 0));
 
@@ -67,18 +67,16 @@ public class ProfileView extends VBox {
 
         getChildren().add(headerPanel);
 
-        // Profile Card Section
+
         VBox profileCard = createProfileCard();
         getChildren().add(profileCard);
 
-        // Action Section
+
         HBox actionPanel = createActionPanel();
         getChildren().add(actionPanel);
     }
 
-    /**
-     * Membuat card utama untuk menampilkan profil
-     */
+
     private VBox createProfileCard() {
         VBox card = new VBox(20);
         card.setStyle("-fx-background-color: white; -fx-background-radius: 15; " +
@@ -86,52 +84,49 @@ public class ProfileView extends VBox {
         card.setPadding(new Insets(40));
         card.setMaxWidth(600);
 
-        // Avatar Section
+
         VBox avatarSection = createAvatarSection();
         card.getChildren().add(avatarSection);
 
-        // Divider
+
         addDivider(card);
 
-        // Profile Information Section
         VBox infoSection = createInfoSection();
         card.getChildren().add(infoSection);
 
         return card;
     }
 
-    /**
-     * Membuat section avatar dengan nama pengguna
-     */
+
     private VBox createAvatarSection() {
         VBox section = new VBox(15);
         section.setAlignment(Pos.CENTER);
 
-        // Avatar Circle
+
         Circle avatar = new Circle(60);
         avatar.setFill(Color.web(GREEN_LIGHT));
         
-        // Inisial Nama
+
         Label lblInisial = new Label("GS");
         lblInisial.setFont(Font.font("SansSerif", FontWeight.BOLD, 24));
         lblInisial.setTextFill(Color.WHITE);
         lblInisial.setAlignment(Pos.CENTER);
 
-        // Stack avatar dengan inisial
+
         javafx.scene.layout.StackPane avatarStack = new javafx.scene.layout.StackPane();
         avatarStack.getChildren().addAll(avatar, lblInisial);
         avatarStack.setPrefSize(120, 120);
         avatarStack.setAlignment(Pos.CENTER);
 
-        // Nama Pengguna (bisa di-double-click untuk edit)
+
         lblNamaPengguna = new Label("Nama Pengguna");
         lblNamaPengguna.setFont(Font.font("SansSerif", FontWeight.BOLD, 22));
         lblNamaPengguna.setTextFill(Color.web(GREEN_DARK));
         
-        // Setup double-click listener untuk edit nama
+
         setupDoubleClickNameEdit(lblNamaPengguna);
 
-        // Label hint untuk double-click
+
         Label lblHint = new Label("(Double-click untuk mengubah nama)");
         lblHint.setFont(Font.font("SansSerif", 11));
         lblHint.setTextFill(Color.GRAY);
@@ -140,27 +135,25 @@ public class ProfileView extends VBox {
         return section;
     }
 
-    /**
-     * Membuat section informasi profil
-     */
+
     private VBox createInfoSection() {
         VBox section = new VBox(20);
 
-        // Email Section
+
         VBox emailGroup = createInfoGroup(
                 "Alamat Email",
                 lblEmailKontak = new Label("email@growseeds.id")
         );
         section.getChildren().add(emailGroup);
 
-        // Status Lahan Section
+
         VBox statusGroup = createInfoGroup(
                 "Status Lahan",
                 lblStatusLahan = new Label("Lahan Pribadi")
         );
         section.getChildren().add(statusGroup);
 
-        // User ID Section (readonly)
+
         VBox userIdGroup = createInfoGroup(
                 "ID Pengguna",
                 new Label(String.valueOf(UserSession.requireUserId()))
@@ -170,9 +163,7 @@ public class ProfileView extends VBox {
         return section;
     }
 
-    /**
-     * Helper untuk membuat group informasi
-     */
+
     private VBox createInfoGroup(String label, Label valueLabel) {
         VBox group = new VBox(8);
         
@@ -187,9 +178,7 @@ public class ProfileView extends VBox {
         return group;
     }
 
-    /**
-     * Membuat panel aksi untuk edit dan reset
-     */
+ 
     private HBox createActionPanel() {
         HBox panel = new HBox(15);
         panel.setAlignment(Pos.CENTER);
@@ -213,16 +202,11 @@ public class ProfileView extends VBox {
         return panel;
     }
 
-    /**
-     * Setup double-click untuk edit nama pengguna
-     */
+ 
     private void setupDoubleClickNameEdit(Label label) {
         label.setOnMouseClicked(this::handleNameClick);
     }
 
-    /**
-     * Handle click event untuk double-click detection
-     */
     private void handleNameClick(MouseEvent event) {
         long currentTime = System.currentTimeMillis();
         
@@ -240,9 +224,7 @@ public class ProfileView extends VBox {
         }
     }
 
-    /**
-     * Dialog untuk edit nama pengguna
-     */
+
     private void openEditNameDialog() {
         javafx.scene.control.Dialog<String> dialog = new javafx.scene.control.Dialog<>();
         dialog.setTitle("Ubah Nama");
@@ -281,9 +263,7 @@ public class ProfileView extends VBox {
         }
     }
 
-    /**
-     * Dialog untuk edit email dan status lahan
-     */
+ 
     private void openEditProfileDialog() {
         javafx.scene.control.Dialog<javafx.util.Pair<String, String>> dialog = new javafx.scene.control.Dialog<>();
         dialog.setTitle("Ubah Profil");
@@ -296,7 +276,7 @@ public class ProfileView extends VBox {
         VBox content = new VBox(15);
         content.setPadding(new Insets(15));
 
-        // Email Field
+
         Label lblEmailLabel = new Label("Alamat Email:");
         lblEmailLabel.setFont(Font.font("SansSerif", 12));
         TextField txtEmail = new TextField();
@@ -304,7 +284,7 @@ public class ProfileView extends VBox {
         txtEmail.setStyle("-fx-padding: 10px; -fx-font-size: 13px; -fx-border-color: #ddd; " +
                 "-fx-border-radius: 5; -fx-background-radius: 5;");
 
-        // Status Lahan Field
+
         Label lblStatusLabel = new Label("Status Lahan:");
         lblStatusLabel.setFont(Font.font("SansSerif", 12));
         
@@ -336,16 +316,14 @@ public class ProfileView extends VBox {
         }
     }
 
-    /**
-     * Load profil dari database
-     */
+
     private void loadProfile() {
         try {
             int userId = UserSession.requireUserId();
             
-            // Cek apakah profile sudah ada
+
             if (!profileService.profileSudahAda(userId)) {
-                // Buat profile baru jika belum ada
+
                 profileService.buatProfileBaru(userId, "Nama Pengguna", UserSession.getCurrentUserEmail(), "Lahan Pribadi");
             }
             
@@ -363,9 +341,7 @@ public class ProfileView extends VBox {
         }
     }
 
-    /**
-     * Update nama pengguna
-     */
+
     private void updateNamaPengguna(String namaBaru) {
         try {
             int userId = UserSession.requireUserId();
@@ -381,9 +357,7 @@ public class ProfileView extends VBox {
         }
     }
 
-    /**
-     * Update profil lengkap (email dan status lahan)
-     */
+
     private void updateProfileLengkap(String emailBaru, String statusBaru) {
         try {
             int userId = UserSession.requireUserId();
@@ -403,9 +377,7 @@ public class ProfileView extends VBox {
         }
     }
 
-    /**
-     * Helper untuk menampilkan alert dialog
-     */
+
     private void showAlert(String title, String message, Alert.AlertType type) {
         Alert alert = new Alert(type);
         alert.setTitle(title);
@@ -414,9 +386,7 @@ public class ProfileView extends VBox {
         alert.showAndWait();
     }
 
-    /**
-     * Helper untuk menambah divider
-     */
+
     private void addDivider(VBox container) {
         javafx.scene.shape.Line divider = new javafx.scene.shape.Line();
         divider.setStrokeWidth(1);

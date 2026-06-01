@@ -12,9 +12,7 @@ import model.InfoCuacaTani;
 
 public class InfoCuacaService {
 
-    /**
-     * Mengambil semua data cuaca
-     */
+
     public List<InfoCuacaTani> getAllInfoCuaca() {
         List<InfoCuacaTani> daftarCuaca = new ArrayList<>();
         String query = "SELECT id, wilayah_lahan, suhu, kelembaban, curah_hujan FROM info_cuaca_tani";
@@ -40,9 +38,7 @@ public class InfoCuacaService {
         return daftarCuaca;
     }
 
-    /**
-     * Mengambil info cuaca berdasarkan ID
-     */
+
     public InfoCuacaTani getInfoCuacaById(int id) {
         String query = "SELECT id, wilayah_lahan, suhu, kelembaban, curah_hujan FROM info_cuaca_tani WHERE id = ?";
         
@@ -68,9 +64,7 @@ public class InfoCuacaService {
         return null;
     }
 
-    /**
-     * Mengambil info cuaca berdasarkan wilayah
-     */
+
     public InfoCuacaTani getInfoCuacaByWilayah(String wilayah) {
         String query = "SELECT id, wilayah_lahan, suhu, kelembaban, curah_hujan FROM info_cuaca_tani WHERE LOWER(wilayah_lahan) = LOWER(?)";
         
@@ -96,9 +90,7 @@ public class InfoCuacaService {
         return null;
     }
 
-    /**
-     * Menambah data cuaca baru
-     */
+
     public boolean tambahInfoCuaca(String wilayah, double suhu, double kelembaban, double curahHujan) {
         String query = "INSERT INTO info_cuaca_tani (wilayah_lahan, suhu, kelembaban, curah_hujan) VALUES (?, ?, ?, ?)";
         
@@ -116,9 +108,7 @@ public class InfoCuacaService {
         }
     }
 
-    /**
-     * Update info cuaca
-     */
+
     public boolean updateInfoCuaca(int id, String wilayah, double suhu, double kelembaban, double curahHujan) {
         String query = "UPDATE info_cuaca_tani SET wilayah_lahan = ?, suhu = ?, kelembaban = ?, curah_hujan = ? WHERE id = ?";
         
@@ -137,9 +127,7 @@ public class InfoCuacaService {
         }
     }
 
-    /**
-     * Mencari info cuaca berdasarkan wilayah
-     */
+
     public List<InfoCuacaTani> cariCuacaByWilayah(String keyword) {
         List<InfoCuacaTani> hasil = new ArrayList<>();
         String query = "SELECT id, wilayah_lahan, suhu, kelembaban, curah_hujan FROM info_cuaca_tani WHERE LOWER(wilayah_lahan) LIKE LOWER(?)";

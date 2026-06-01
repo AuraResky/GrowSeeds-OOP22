@@ -12,9 +12,7 @@ import model.KalenderTanam;
 
 public class KalenderTanamService {
 
-    /**
-     * Mengambil semua kalender tanam
-     */
+
     public List<KalenderTanam> getAllKalenderTanam() {
         List<KalenderTanam> daftarKalender = new ArrayList<>();
         String query = "SELECT id, nama_tanaman, tanggal_semai, estimasi_panen, fase_pertumbuhan FROM kalender_tanam";
@@ -40,9 +38,7 @@ public class KalenderTanamService {
         return daftarKalender;
     }
 
-    /**
-     * Mengambil kalender tanam berdasarkan ID
-     */
+ 
     public KalenderTanam getKalenderById(int id) {
         String query = "SELECT id, nama_tanaman, tanggal_semai, estimasi_panen, fase_pertumbuhan FROM kalender_tanam WHERE id = ?";
         
@@ -68,9 +64,7 @@ public class KalenderTanamService {
         return null;
     }
 
-    /**
-     * Menambah kalender tanam baru
-     */
+
     public boolean tambahKalenderTanam(String namaTanaman, String tanggalSemai, String estimasiPanen, String fasePertumbuhan) {
         String query = "INSERT INTO kalender_tanam (nama_tanaman, tanggal_semai, estimasi_panen, fase_pertumbuhan) VALUES (?, ?, ?, ?)";
         
@@ -106,9 +100,7 @@ public class KalenderTanamService {
         }
     }
 
-    /**
-     * Mencari kalender tanam berdasarkan nama tanaman
-     */
+
     public List<KalenderTanam> cariTanaman(String keyword) {
         List<KalenderTanam> hasil = new ArrayList<>();
         String query = "SELECT id, nama_tanaman, tanggal_semai, estimasi_panen, fase_pertumbuhan FROM kalender_tanam WHERE LOWER(nama_tanaman) LIKE LOWER(?)";

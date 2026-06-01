@@ -10,9 +10,7 @@ import model.Profile;
 
 public class ProfileService {
 
-    /**
-     * Mengambil profil pengguna berdasarkan ID
-     */
+
     public Profile getProfileByUserId(int userId) {
         String query = "SELECT id, nama_pengguna, email_kontak, status_lahan FROM profiles WHERE id_user = ?";
         try (Connection conn = DatabaseConnection.getConnection();
@@ -35,9 +33,7 @@ public class ProfileService {
         return null;
     }
 
-    /**
-     * Membuat profil baru untuk pengguna
-     */
+
     public boolean buatProfileBaru(int userId, String namaPengguna, String emailKontak, String statusLahan) {
         String query = "INSERT INTO profiles (id_user, nama_pengguna, email_kontak, status_lahan) VALUES (?, ?, ?, ?)";
         try (Connection conn = DatabaseConnection.getConnection();
@@ -54,9 +50,7 @@ public class ProfileService {
         }
     }
 
-    /**
-     * Memperbarui nama pengguna
-     */
+
     public boolean updateNamaPengguna(int userId, String namaPengguna) {
         String query = "UPDATE profiles SET nama_pengguna = ? WHERE id_user = ?";
         try (Connection conn = DatabaseConnection.getConnection();
@@ -71,9 +65,7 @@ public class ProfileService {
         }
     }
 
-    /**
-     * Memperbarui email kontak
-     */
+
     public boolean updateEmailKontak(int userId, String emailKontak) {
         String query = "UPDATE profiles SET email_kontak = ? WHERE id_user = ?";
         try (Connection conn = DatabaseConnection.getConnection();
@@ -88,9 +80,7 @@ public class ProfileService {
         }
     }
 
-    /**
-     * Memperbarui status lahan
-     */
+
     public boolean updateStatusLahan(int userId, String statusLahan) {
         String query = "UPDATE profiles SET status_lahan = ? WHERE id_user = ?";
         try (Connection conn = DatabaseConnection.getConnection();
@@ -105,9 +95,7 @@ public class ProfileService {
         }
     }
 
-    /**
-     * Memperbarui seluruh profil
-     */
+ 
     public boolean updateProfileLengkap(int userId, String namaPengguna, String emailKontak, String statusLahan) {
         String query = "UPDATE profiles SET nama_pengguna = ?, email_kontak = ?, status_lahan = ? WHERE id_user = ?";
         try (Connection conn = DatabaseConnection.getConnection();
@@ -124,9 +112,7 @@ public class ProfileService {
         }
     }
 
-    /**
-     * Mengecek apakah profil sudah ada untuk user
-     */
+
     public boolean profileSudahAda(int userId) {
         String query = "SELECT 1 FROM profiles WHERE id_user = ? LIMIT 1";
         try (Connection conn = DatabaseConnection.getConnection();

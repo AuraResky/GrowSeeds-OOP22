@@ -12,9 +12,7 @@ import model.DeteksiHama;
 
 public class DeteksiHamaService {
 
-    /**
-     * Mengambil semua data hama dari database
-     */
+
     public List<DeteksiHama> getAllHama() {
         List<DeteksiHama> daftarHama = new ArrayList<>();
         String query = "SELECT id, nama_hama_penyakit, gejala, solusi_penanganan, tingkat_bahaya FROM deteksi_hama";
@@ -40,9 +38,7 @@ public class DeteksiHamaService {
         return daftarHama;
     }
 
-    /**
-     * Mengambil data hama berdasarkan ID
-     */
+
     public DeteksiHama getHamaById(int id) {
         String query = "SELECT id, nama_hama_penyakit, gejala, solusi_penanganan, tingkat_bahaya FROM deteksi_hama WHERE id = ?";
         
@@ -68,9 +64,7 @@ public class DeteksiHamaService {
         return null;
     }
 
-    /**
-     * Mengambil data hama berdasarkan nama
-     */
+
     public DeteksiHama getHamaByNama(String nama) {
         String query = "SELECT id, nama_hama_penyakit, gejala, solusi_penanganan, tingkat_bahaya FROM deteksi_hama WHERE LOWER(nama_hama_penyakit) = LOWER(?)";
         
@@ -96,9 +90,7 @@ public class DeteksiHamaService {
         return null;
     }
 
-    /**
-     * Menambah data hama baru
-     */
+
     public boolean tambahHama(String nama, String gejala, String solusi, String tingkatBahaya) {
         String query = "INSERT INTO deteksi_hama (nama_hama_penyakit, gejala, solusi_penanganan, tingkat_bahaya) VALUES (?, ?, ?, ?)";
         
@@ -116,9 +108,7 @@ public class DeteksiHamaService {
         }
     }
 
-    /**
-     * Mencari hama berdasarkan keyword gejala
-     */
+
     public List<DeteksiHama> cariHamaBerdasarkanGejala(String keyword) {
         List<DeteksiHama> hasil = new ArrayList<>();
         String query = "SELECT id, nama_hama_penyakit, gejala, solusi_penanganan, tingkat_bahaya FROM deteksi_hama WHERE LOWER(gejala) LIKE LOWER(?)";

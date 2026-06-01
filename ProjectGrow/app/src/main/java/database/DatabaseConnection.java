@@ -7,7 +7,6 @@ import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -135,7 +134,7 @@ public class DatabaseConnection {
             System.out.println("Database GrowSeeds siap digunakan.");
             System.out.println("Lokasi database: " + databaseFile.getAbsolutePath());
 
-            // Inisialisasi data sample jika database kosong
+
             inisialisasiDataSample();
 
         } catch (SQLException e) {
@@ -146,40 +145,55 @@ public class DatabaseConnection {
         }
     }
 
-    /**
-     * Menginisialisasi data sample untuk tabel-tabel saran
-     */
+
     private static void inisialisasiDataSample() {
         try (Connection conn = getConnection();
              Statement stmt = conn.createStatement()) {
 
-            // Cek dan insert data hama
-            try (ResultSet rs = stmt.executeQuery("SELECT COUNT(*) as count FROM deteksi_hama")) {
-                if (rs.next() && rs.getInt("count") == 0) {
-                    String[] inserts = {
-                            "INSERT INTO deteksi_hama (nama_hama_penyakit, gejala, solusi_penanganan, tingkat_bahaya) VALUES " +
-                                    "('Wereng Coklat', 'Daun menguning, tanaman tampak layu, ada bintik kuning pada daun', " +
-                                    "'Semprotkan pestisida organik atau kimiawi, gunakan perangkap perekat kuning, tanam varietas tahan', 'Tinggi')",
-                            "INSERT INTO deteksi_hama (nama_hama_penyakit, gejala, solusi_penanganan, tingkat_bahaya) VALUES " +
-                                    "('Belalang', 'Daun berlubang-lubang, area daun yang hilang, kerusakan parah pada tunas muda', " +
-                                    "'Panen manual, semprot dengan pestisida, tanam tanaman pengusir, gunakan jaring', 'Sedang')",
-                            "INSERT INTO deteksi_hama (nama_hama_penyakit, gejala, solusi_penanganan, tingkat_bahaya) VALUES " +
-                                    "('Ulat Grayak', 'Daun terlihat berlubang dengan tepi yang tidak teratur, kotoran pada tanaman', " +
-                                    "'Ambil ulat secara manual, gunakan Bacillus thuringiensis, semprotkan insektisida piretroid', 'Sedang')",
-                            "INSERT INTO deteksi_hama (nama_hama_penyakit, gejala, solusi_penanganan, tingkat_bahaya) VALUES " +
-                                    "('Penyakit Karat', 'Bintik coklat pada daun dengan spora berwarna coklat, daun menguning', " +
-                                    "'Pangkas bagian yang terinfeksi, semprotkan fungisida, tingkatkan drainase, hindari kelembaban tinggi', 'Sedang')"
-                    };
-                    for (String insert : inserts) {
-                        stmt.executeUpdate(insert);
-                    }
-                    System.out.println("Data hama sample berhasil diinisialisasi.");
+
+            String[][] hamaSamples = {
+                    {"Wereng Coklat", "Daun menguning, tanaman tampak layu, ada bintik kuning pada daun", 
+                            "Semprotkan pestisida organik atau kimiawi, gunakan perangkap perekat kuning, tanam varietas tahan", "Tinggi"},
+                    {"Belalang", "Daun berlubang-lubang, area daun yang hilang, kerusakan parah pada tunas muda", 
+                            "Panen manual, semprot dengan pestisida, tanam tanaman pengusir, gunakan jaring", "Sedang"},
+                    {"Ulat Grayak", "Daun terlihat berlubang dengan tepi yang tidak teratur, kotoran pada tanaman", 
+                            "Ambil ulat secara manual, gunakan Bacillus thuringiensis, semprotkan insektisida piretroid", "Sedang"},
+                    {"Penyakit Karat", "Bintik coklat pada daun dengan spora berwarna coklat, daun menguning", 
+                            "Pangkas bagian yang terinfeksi, semprotkan fungisida, tingkatkan drainase, hindari kelembaban tinggi", "Sedang"},
+                    {"Ulat Penggerek Batang", "Tunas dan batang berlubang, tanaman layu, sisa serasah pada pangkal batang", 
+                            "Potong bagian terinfeksi, gunakan perangkap feromon, semprot insektisida sistemik", "Tinggi"},
+                    {"Kutu Daun", "Daun menguning, lengket pada permukaan daun, koloni serangga kecil terlihat di bawah daun", 
+                            "Semprot dengan sabun insektisida atau neem oil, gunakan predator alami seperti kumbang, cuci tanaman", "Sedang"},
+                    {"Tungau", "Daun memucat, bercak putih halus, tanaman tampak kusut dan kering", 
+                            "Semprotkan mitisida, bersihkan daun secara rutin, kurangi debu dan kelembaban tinggi", "Sedang"},
+                    {"Busuk Akar", "Tanaman layu walau tanah lembap, akar berwarna coklat dan berbau busuk", 
+                            "Perbaiki drainase, gunakan fungisida akar, ganti media tanam, hindari genangan air", "Tinggi"},
+                    {"Layu Fusarium", "Tanaman layu secara mendadak, vena daun berubah coklat, bagian pangkal batang membusuk", 
+                            "Gunakan bibit tahan, sanitasikan lahan, rotasi tanaman, buang tanaman terinfeksi", "Tinggi"},
+                    {"Embun Tepung", "Lapisan putih seperti tepung pada permukaan daun, daun melengkung dan kering", 
+                            "Semprot dengan fungisida, kurangi kelembaban, beri jarak tanam lebih lebar", "Sedang"}
+            };
+
+            String insertHamaQuery = "INSERT INTO deteksi_hama (nama_hama_penyakit, gejala, solusi_penanganan, tingkat_bahaya) " +
+                    "SELECT ?, ?, ?, ? WHERE NOT EXISTS (" +
+                    "SELECT 1 FROM deteksi_hama WHERE LOWER(nama_hama_penyakit) = LOWER(?)" +
+                    ")";
+
+            try (PreparedStatement insertStmt = conn.prepareStatement(insertHamaQuery)) {
+                int added = 0;
+                for (String[] hama : hamaSamples) {
+                    insertStmt.setString(1, hama[0]);
+                    insertStmt.setString(2, hama[1]);
+                    insertStmt.setString(3, hama[2]);
+                    insertStmt.setString(4, hama[3]);
+                    insertStmt.setString(5, hama[0]);
+                    added += insertStmt.executeUpdate();
+                }
+                if (added > 0) {
+                    System.out.println("Data hama sample berhasil ditambahkan atau dilengkapi.");
                 }
             }
 
-            // Tidak ada data sample otomatis untuk kalender tanam, rekomendasi pupuk, dan info cuaca.
-            // Data tersebut akan diisi oleh pengguna melalui UI.
-            // Namun jika masih ada baris template sample lama, hapus saja entry khusus ini.
             String cleanupQuery = "DELETE FROM kalender_tanam WHERE nama_tanaman = ? " +
                     "AND tanggal_semai = ? AND estimasi_panen = ? AND fase_pertumbuhan = ?";
             try (PreparedStatement cleanupStmt = conn.prepareStatement(cleanupQuery)) {

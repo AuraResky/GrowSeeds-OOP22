@@ -12,9 +12,7 @@ import model.RekomendasiPupuk;
 
 public class RekomendasiPupukService {
 
-    /**
-     * Mengambil semua rekomendasi pupuk
-     */
+
     public List<RekomendasiPupuk> getAllRekomendasi() {
         List<RekomendasiPupuk> daftarRekomendasi = new ArrayList<>();
         String query = "SELECT id, jenis_tanaman, luas_lahan, kebutuhan_urea, kebutuhan_npk FROM rekomendasi_pupuk";
@@ -40,9 +38,7 @@ public class RekomendasiPupukService {
         return daftarRekomendasi;
     }
 
-    /**
-     * Mengambil rekomendasi pupuk berdasarkan ID
-     */
+
     public RekomendasiPupuk getRekomendasiById(int id) {
         String query = "SELECT id, jenis_tanaman, luas_lahan, kebutuhan_urea, kebutuhan_npk FROM rekomendasi_pupuk WHERE id = ?";
         
@@ -68,9 +64,7 @@ public class RekomendasiPupukService {
         return null;
     }
 
-    /**
-     * Menambah rekomendasi pupuk baru
-     */
+
     public boolean tambahRekomendasi(String jenisTanaman, double luasLahan, double kebutuhanUrea, double kebutuhanNpk) {
         String query = "INSERT INTO rekomendasi_pupuk (jenis_tanaman, luas_lahan, kebutuhan_urea, kebutuhan_npk) VALUES (?, ?, ?, ?)";
         
@@ -106,9 +100,7 @@ public class RekomendasiPupukService {
         }
     }
 
-    /**
-     * Mencari rekomendasi berdasarkan jenis tanaman
-     */
+
     public List<RekomendasiPupuk> cariRekomendasi(String jenisTanaman) {
         List<RekomendasiPupuk> hasil = new ArrayList<>();
         String query = "SELECT id, jenis_tanaman, luas_lahan, kebutuhan_urea, kebutuhan_npk FROM rekomendasi_pupuk WHERE LOWER(jenis_tanaman) LIKE LOWER(?)";

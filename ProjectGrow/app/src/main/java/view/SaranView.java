@@ -100,9 +100,9 @@ public class SaranView extends VBox {
         submenu.setPadding(new Insets(0, 0, 20, 0));
         submenu.setAlignment(Pos.CENTER_LEFT);
 
-        btnRekomendasi = createSubmenuButton("💧 Rekomendasi Pupuk", true);
-        btnKalender = createSubmenuButton("📅 Kalender Tanam", false);
-        btnHama = createSubmenuButton("🐛 Deteksi Hama", false);
+        btnRekomendasi = createSubmenuButton(" Rekomendasi Pupuk", true);
+        btnKalender = createSubmenuButton(" Kalender Tanam", false);
+        btnHama = createSubmenuButton(" Deteksi Hama", false);
 
         btnRekomendasi.setOnAction(e -> switchMenu(btnRekomendasi, "rekomendasi"));
         btnKalender.setOnAction(e -> switchMenu(btnKalender, "kalender"));
